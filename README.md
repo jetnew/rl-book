@@ -1,5 +1,10 @@
-# rl-book
+# Concepts in RL
 
-### Update
-1. `jupyter-book build rl-book/`
-2. `ghp-import -npf rl-book/_build/html`
+### Update book
+```
+jupyter-book build rl-book/
+```
+
+```
+ghp-import -npf rl-book/_build/html
+```
