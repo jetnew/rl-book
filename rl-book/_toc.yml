@@ -2,9 +2,19 @@
 # Learn more at https://jupyterbook.org/customize/toc.html
 
 format: jb-book
-root: intro
+root: home
 chapters:
-- file: markdown
-- file: notebooks
-- file: markdown-notebooks
-- file: mymarkdownfile
+- file: reinforcement-learning
+- file: planning
+- file: world-models
+- file: reproducibility
+- file: intrinsic-motivation
+- file: neural-map
+- file: compositionality
+- file: causality
+- file: multi-agent
+- file: environment
+- file: generalization
+- file: hierarchy
+- file: symbols
+- file: evolution
