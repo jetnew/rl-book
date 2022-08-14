@@ -403,8 +403,8 @@ title="Print to PDF"
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#probabilistic-ensembles">
-   Probabilistic Ensembles
+  <a class="reference internal nav-link" href="#probabilistic-ensembles-with-trajectory-sampling">
+   Probabilistic Ensembles with Trajectory Sampling
   </a>
  </li>
 </ul>
@@ -437,8 +437,8 @@ title="Print to PDF"
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#probabilistic-ensembles">
-   Probabilistic Ensembles
+  <a class="reference internal nav-link" href="#probabilistic-ensembles-with-trajectory-sampling">
+   Probabilistic Ensembles with Trajectory Sampling
   </a>
  </li>
 </ul>
@@ -456,13 +456,19 @@ title="Print to PDF"
 <p>Planning is a method of simulating a sequence of actions in an environment model before actually taking an action in the real environment.</p>
 <p>Concepts covered:</p>
 <ol class="simple">
-<li><p>Cross entropy method</p></li>
-<li><p>Monte Carlo tree search</p></li>
-<li><p>Probabilistic ensembles</p></li>
+<li><p>Cross entropy method (CEM)</p></li>
+<li><p>Monte Carlo tree search (MCTS)</p></li>
+<li><p>Probabilistic ensembles with trajectory sampling (PETS)</p></li>
 </ol>
+<p>References:</p>
+<ul class="simple">
+<li><p>Deep Reinforcement Learning in a Handful of Trials using Probabilistic Dynamics Models</p></li>
+<li><p>Exploring Model-based Planning with Policy Networks</p></li>
+<li><p>Learning Latent Dynamics for Planning from Pixels</p></li>
+</ul>
 <section id="cross-entropy-method">
 <h2>Cross Entropy Method<a class="headerlink" href="#cross-entropy-method" title="Permalink to this headline">#</a></h2>
-<p>The Cross Entroy Method (CEM) is a gradient-free optimization method commonly used for planning in model-based reinforcement learning.</p>
+<p>The Cross Entropy Method (CEM) is a gradient-free optimization method commonly used for planning in model-based reinforcement learning.</p>
 <p>CEM Algorithm</p>
 <ol class="simple">
 <li><p>Create a Gaussian distribution <span class="math notranslate nohighlight">\(N(\mu,\sigma)\)</span> that describes the weights <span class="math notranslate nohighlight">\(\theta\)</span> of the neural network.</p></li>
@@ -540,28 +546,30 @@ title="Print to PDF"
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[9.0, 10.0, 9.0, 27.0, 12.0, 8.0, 10.0, 37.0, 10.0, 12.0]
-[13.0, 23.0, 9.0, 15.0, 8.0, 16.0, 23.0, 45.0, 9.0, 25.0]
-[16.0, 33.0, 18.0, 30.0, 17.0, 17.0, 34.0, 21.0, 59.0, 35.0]
-[27.0, 19.0, 17.0, 26.0, 27.0, 25.0, 36.0, 45.0, 30.0, 34.0]
-[26.0, 28.0, 50.0, 11.0, 27.0, 27.0, 30.0, 71.0, 42.0, 29.0]
-[33.0, 25.0, 31.0, 30.0, 27.0, 21.0, 29.0, 33.0, 37.0, 44.0]
-[38.0, 37.0, 24.0, 34.0, 84.0, 20.0, 23.0, 28.0, 45.0, 52.0]
-[29.0, 23.0, 25.0, 38.0, 28.0, 32.0, 67.0, 25.0, 30.0, 26.0]
-[34.0, 27.0, 65.0, 32.0, 70.0, 38.0, 41.0, 24.0, 21.0, 27.0]
-[28.0, 39.0, 38.0, 47.0, 31.0, 22.0, 35.0, 37.0, 45.0, 20.0]
-[58.0, 20.0, 75.0, 23.0, 23.0, 36.0, 31.0, 27.0, 31.0, 29.0]
-[35.0, 32.0, 41.0, 33.0, 40.0, 52.0, 28.0, 34.0, 28.0, 46.0]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[18.0, 9.0, 9.0, 10.0, 8.0, 9.0, 9.0, 8.0, 9.0, 12.0]
+[11.0, 33.0, 10.0, 10.0, 19.0, 11.0, 19.0, 8.0, 13.0, 15.0]
+[10.0, 123.0, 9.0, 26.0, 16.0, 27.0, 48.0, 24.0, 19.0, 35.0]
+[19.0, 68.0, 35.0, 72.0, 28.0, 73.0, 47.0, 42.0, 41.0, 63.0]
+[43.0, 52.0, 163.0, 100.0, 33.0, 67.0, 88.0, 56.0, 40.0, 30.0]
+[93.0, 112.0, 96.0, 121.0, 71.0, 59.0, 104.0, 28.0, 47.0, 74.0]
+[133.0, 49.0, 67.0, 94.0, 70.0, 80.0, 69.0, 73.0, 54.0, 45.0]
+[54.0, 63.0, 113.0, 113.0, 81.0, 125.0, 107.0, 84.0, 82.0, 135.0]
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[27.0, 24.0, 54.0, 52.0, 27.0, 29.0, 38.0, 42.0, 28.0, 47.0]
-[30.0, 27.0, 27.0, 31.0, 38.0, 28.0, 30.0, 20.0, 85.0, 45.0]
-[47.0, 24.0, 53.0, 68.0, 60.0, 49.0, 28.0, 32.0, 54.0, 79.0]
-[24.0, 39.0, 25.0, 36.0, 101.0, 58.0, 24.0, 27.0, 37.0, 37.0]
-[23.0, 63.0, 24.0, 34.0, 24.0, 25.0, 34.0, 54.0, 55.0, 41.0]
-[39.0, 48.0, 23.0, 87.0, 38.0, 26.0, 48.0, 27.0, 23.0, 59.0]
-[49.0, 32.0, 41.0, 51.0, 38.0, 27.0, 30.0, 46.0, 26.0, 26.0]
-[42.0, 23.0, 40.0, 24.0, 31.0, 29.0, 51.0, 22.0, 35.0, 43.0]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[54.0, 120.0, 53.0, 431.0, 93.0, 97.0, 54.0, 133.0, 140.0, 142.0]
+[59.0, 63.0, 73.0, 128.0, 64.0, 82.0, 52.0, 93.0, 63.0, 87.0]
+[82.0, 65.0, 66.0, 68.0, 81.0, 139.0, 73.0, 80.0, 92.0, 131.0]
+[123.0, 189.0, 115.0, 81.0, 77.0, 120.0, 130.0, 62.0, 189.0, 174.0]
+[81.0, 99.0, 162.0, 65.0, 167.0, 76.0, 84.0, 176.0, 85.0, 146.0]
+[232.0, 120.0, 156.0, 118.0, 105.0, 108.0, 72.0, 73.0, 126.0, 114.0]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[102.0, 190.0, 89.0, 190.0, 118.0, 81.0, 139.0, 79.0, 76.0, 100.0]
+[74.0, 98.0, 169.0, 82.0, 78.0, 99.0, 112.0, 160.0, 391.0, 263.0]
+[182.0, 98.0, 109.0, 252.0, 124.0, 122.0, 186.0, 106.0, 241.0, 162.0]
+[176.0, 76.0, 74.0, 110.0, 182.0, 85.0, 111.0, 84.0, 75.0, 75.0]
+[100.0, 90.0, 201.0, 68.0, 164.0, 88.0, 119.0, 159.0, 73.0, 127.0]
+[210.0, 83.0, 86.0, 104.0, 112.0, 78.0, 102.0, 122.0, 74.0, 76.0]
 </pre></div>
 </div>
 </div>
@@ -573,16 +581,16 @@ title="Print to PDF"
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(array([[-2.97851359,  4.88814473],
-        [ 0.54255219, -4.37263154],
-        [ 0.3179081 ,  0.02582262],
-        [-1.71460631,  0.07162347],
-        [ 0.52532392, -0.24820291]]),
- array([[5.46232708e-03, 1.19883604e-02],
-        [3.09637559e-04, 1.72948488e-02],
-        [1.75588319e-02, 3.66150916e-05],
-        [2.44638998e-03, 2.06700714e-05],
-        [5.37123333e-04, 1.22797736e-02]]))
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(array([[-0.08092788, -3.90679289],
+        [ 0.17187715,  1.6467033 ],
+        [ 0.95738557, -0.27835679],
+        [-1.69261409,  1.18980922],
+        [-0.11475664, -0.16217023]]),
+ array([[2.71812173e-04, 2.84475699e-03],
+        [5.27674917e-04, 1.34500278e-03],
+        [1.18191726e-04, 2.32261000e-03],
+        [4.25802605e-03, 8.76518625e-03],
+        [5.10162382e-05, 1.15022676e-03]]))
 </pre></div>
 </div>
 </div>
@@ -601,7 +609,7 @@ title="Print to PDF"
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>37.0
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>72.0
 </pre></div>
 </div>
 </div>
@@ -611,9 +619,11 @@ title="Print to PDF"
 <h2>Monte Carlo Tree Search<a class="headerlink" href="#monte-carlo-tree-search" title="Permalink to this headline">#</a></h2>
 <p>Upcoming</p>
 </section>
-<section id="probabilistic-ensembles">
-<h2>Probabilistic Ensembles<a class="headerlink" href="#probabilistic-ensembles" title="Permalink to this headline">#</a></h2>
-<p>Upcoming</p>
+<section id="probabilistic-ensembles-with-trajectory-sampling">
+<h2>Probabilistic Ensembles with Trajectory Sampling<a class="headerlink" href="#probabilistic-ensembles-with-trajectory-sampling" title="Permalink to this headline">#</a></h2>
+<p>Probabilistic ensembles with trajectory sampling (PETS) is a model-based reinforcement learning algorithm that combines probabilistic netwroks to capture aleatoric uncertainty and ensembles to capture epistemic uncertainty.</p>
+<p>PETS is used for model predictive control (MPC), that plans and optimizes for a sequence of actions.</p>
+<p>Instead of random shooting, PETS uses CEM to sample actions from a distribution closer to previous action samples that yielded high reward.</p>
 </section>
 </section>
 
