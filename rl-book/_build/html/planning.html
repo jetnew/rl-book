@@ -50,6 +50,8 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="World Models" href="world-models.html" />
@@ -368,12 +370,46 @@ title="Print to PDF"
     </ul>
   </div>
 </div>
+<label for="__page-toc"
+  class="headerbtn headerbtn-page-toc"
+  
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-list"></i>
+  </span>
+
+</label>
 
     </div>
 </div>
 
 <!-- Table of contents -->
 <div class="col-md-3 bd-toc show noprint">
+    <div class="tocsection onthispage pt-5 pb-3">
+        <i class="fas fa-list"></i> Contents
+    </div>
+    <nav id="bd-toc-nav" aria-label="Page">
+        <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#cross-entropy-method">
+   Cross Entropy Method
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#monte-carlo-tree-search">
+   Monte Carlo Tree Search
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#probabilistic-ensembles">
+   Probabilistic Ensembles
+  </a>
+ </li>
+</ul>
+
+    </nav>
 </div>
     </div>
     <div class="article row">
@@ -385,6 +421,29 @@ title="Print to PDF"
                 <div id="print-main-content">
                     <div id="jb-print-toc">
                         
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#cross-entropy-method">
+   Cross Entropy Method
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#monte-carlo-tree-search">
+   Monte Carlo Tree Search
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#probabilistic-ensembles">
+   Probabilistic Ensembles
+  </a>
+ </li>
+</ul>
+
+                        </nav>
                     </div>
                 </div>
             </div>
@@ -394,6 +453,168 @@ title="Print to PDF"
                 
   <section class="tex2jax_ignore mathjax_ignore" id="planning">
 <h1>Planning<a class="headerlink" href="#planning" title="Permalink to this headline">#</a></h1>
+<p>Planning is a method of simulating a sequence of actions in an environment model before actually taking an action in the real environment.</p>
+<p>Concepts covered:</p>
+<ol class="simple">
+<li><p>Cross entropy method</p></li>
+<li><p>Monte Carlo tree search</p></li>
+<li><p>Probabilistic ensembles</p></li>
+</ol>
+<section id="cross-entropy-method">
+<h2>Cross Entropy Method<a class="headerlink" href="#cross-entropy-method" title="Permalink to this headline">#</a></h2>
+<p>The Cross Entroy Method (CEM) is a gradient-free optimization method commonly used for planning in model-based reinforcement learning.</p>
+<p>CEM Algorithm</p>
+<ol class="simple">
+<li><p>Create a Gaussian distribution <span class="math notranslate nohighlight">\(N(\mu,\sigma)\)</span> that describes the weights <span class="math notranslate nohighlight">\(\theta\)</span> of the neural network.</p></li>
+<li><p>Sample <span class="math notranslate nohighlight">\(N\)</span> batch samples of <span class="math notranslate nohighlight">\(\theta\)</span> from the Gaussian.</p></li>
+<li><p>Evaluate all <span class="math notranslate nohighlight">\(N\)</span> samples of <span class="math notranslate nohighlight">\(\theta\)</span> using the value function, e.g. running trials.</p></li>
+<li><p>Select the top % of the samples of <span class="math notranslate nohighlight">\(\theta\)</span> and compute the new <span class="math notranslate nohighlight">\(\mu\)</span> and <span class="math notranslate nohighlight">\(\sigma\)</span> to parameterise the new Gaussian distribution.</p></li>
+<li><p>Repeat steps 1-4 until convergence.</p></li>
+</ol>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">tensorflow_probability</span> <span class="k">as</span> <span class="nn">tfp</span>
+<span class="n">tfd</span> <span class="o">=</span> <span class="n">tfp</span><span class="o">.</span><span class="n">distributions</span>
+<span class="kn">import</span> <span class="nn">gym</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># RL Gym</span>
+<span class="n">env</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="s1">&#39;CartPole-v1&#39;</span><span class="p">)</span>
+
+<span class="c1"># Initialisation</span>
+<span class="n">n</span> <span class="o">=</span> <span class="mi">10</span>  <span class="c1"># number of candidate policies</span>
+<span class="n">top_k</span> <span class="o">=</span> <span class="mf">0.40</span>  <span class="c1"># top % selected for next iteration</span>
+<span class="n">mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>  <span class="c1"># shape = (n_parameters, n_actions)</span>
+<span class="n">stddev</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>  <span class="c1"># shape = (n_parameters, n_actions)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_batch_weights</span><span class="p">(</span><span class="n">mean</span><span class="p">,</span> <span class="n">stddev</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+    <span class="n">mvn</span> <span class="o">=</span> <span class="n">tfd</span><span class="o">.</span><span class="n">MultivariateNormalDiag</span><span class="p">(</span>
+        <span class="n">loc</span><span class="o">=</span><span class="n">mean</span><span class="p">,</span>
+        <span class="n">scale_diag</span><span class="o">=</span><span class="n">stddev</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">mvn</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+
+<span class="k">def</span> <span class="nf">policy</span><span class="p">(</span><span class="n">obs</span><span class="p">,</span> <span class="n">weights</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">obs</span> <span class="o">@</span> <span class="n">weights</span><span class="p">[:</span><span class="mi">4</span><span class="p">,:]</span> <span class="o">+</span> <span class="n">weights</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span>
+
+<span class="k">def</span> <span class="nf">run_trial</span><span class="p">(</span><span class="n">weights</span><span class="p">,</span> <span class="n">render</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="n">obs</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+    <span class="n">done</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">reward</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">while</span> <span class="ow">not</span> <span class="n">done</span><span class="p">:</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">policy</span><span class="p">(</span><span class="n">obs</span><span class="p">,</span> <span class="n">weights</span><span class="p">)</span>
+        <span class="n">obs</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">done</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+        <span class="n">reward</span> <span class="o">+=</span> <span class="n">r</span>
+        <span class="k">if</span> <span class="n">render</span><span class="p">:</span>
+            <span class="n">env</span><span class="o">.</span><span class="n">render</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">reward</span>
+
+<span class="k">def</span> <span class="nf">get_new_mean_stddev</span><span class="p">(</span><span class="n">rewards</span><span class="p">,</span> <span class="n">batch_weights</span><span class="p">):</span>
+    <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">rewards</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">][:</span><span class="nb">int</span><span class="p">(</span><span class="n">n</span><span class="o">*</span><span class="n">top_k</span><span class="p">)]</span>
+    <span class="n">mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">batch_weights</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">stddev</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="n">batch_weights</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">mean</span><span class="p">,</span> <span class="n">stddev</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">20</span><span class="p">):</span>
+    <span class="n">batch_weights</span> <span class="o">=</span> <span class="n">get_batch_weights</span><span class="p">(</span><span class="n">mean</span><span class="p">,</span> <span class="n">stddev</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+    <span class="n">rewards</span> <span class="o">=</span> <span class="p">[</span><span class="n">run_trial</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span> <span class="k">for</span> <span class="n">weights</span> <span class="ow">in</span> <span class="n">batch_weights</span><span class="p">]</span>
+    <span class="n">mean</span><span class="p">,</span> <span class="n">stddev</span> <span class="o">=</span> <span class="n">get_new_mean_stddev</span><span class="p">(</span><span class="n">rewards</span><span class="p">,</span> <span class="n">batch_weights</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">rewards</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[9.0, 10.0, 9.0, 27.0, 12.0, 8.0, 10.0, 37.0, 10.0, 12.0]
+[13.0, 23.0, 9.0, 15.0, 8.0, 16.0, 23.0, 45.0, 9.0, 25.0]
+[16.0, 33.0, 18.0, 30.0, 17.0, 17.0, 34.0, 21.0, 59.0, 35.0]
+[27.0, 19.0, 17.0, 26.0, 27.0, 25.0, 36.0, 45.0, 30.0, 34.0]
+[26.0, 28.0, 50.0, 11.0, 27.0, 27.0, 30.0, 71.0, 42.0, 29.0]
+[33.0, 25.0, 31.0, 30.0, 27.0, 21.0, 29.0, 33.0, 37.0, 44.0]
+[38.0, 37.0, 24.0, 34.0, 84.0, 20.0, 23.0, 28.0, 45.0, 52.0]
+[29.0, 23.0, 25.0, 38.0, 28.0, 32.0, 67.0, 25.0, 30.0, 26.0]
+[34.0, 27.0, 65.0, 32.0, 70.0, 38.0, 41.0, 24.0, 21.0, 27.0]
+[28.0, 39.0, 38.0, 47.0, 31.0, 22.0, 35.0, 37.0, 45.0, 20.0]
+[58.0, 20.0, 75.0, 23.0, 23.0, 36.0, 31.0, 27.0, 31.0, 29.0]
+[35.0, 32.0, 41.0, 33.0, 40.0, 52.0, 28.0, 34.0, 28.0, 46.0]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[27.0, 24.0, 54.0, 52.0, 27.0, 29.0, 38.0, 42.0, 28.0, 47.0]
+[30.0, 27.0, 27.0, 31.0, 38.0, 28.0, 30.0, 20.0, 85.0, 45.0]
+[47.0, 24.0, 53.0, 68.0, 60.0, 49.0, 28.0, 32.0, 54.0, 79.0]
+[24.0, 39.0, 25.0, 36.0, 101.0, 58.0, 24.0, 27.0, 37.0, 37.0]
+[23.0, 63.0, 24.0, 34.0, 24.0, 25.0, 34.0, 54.0, 55.0, 41.0]
+[39.0, 48.0, 23.0, 87.0, 38.0, 26.0, 48.0, 27.0, 23.0, 59.0]
+[49.0, 32.0, 41.0, 51.0, 38.0, 27.0, 30.0, 46.0, 26.0, 26.0]
+[42.0, 23.0, 40.0, 24.0, 31.0, 29.0, 51.0, 22.0, 35.0, 43.0]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mean</span><span class="p">,</span> <span class="n">stddev</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(array([[-2.97851359,  4.88814473],
+        [ 0.54255219, -4.37263154],
+        [ 0.3179081 ,  0.02582262],
+        [-1.71460631,  0.07162347],
+        [ 0.52532392, -0.24820291]]),
+ array([[5.46232708e-03, 1.19883604e-02],
+        [3.09637559e-04, 1.72948488e-02],
+        [1.75588319e-02, 3.66150916e-05],
+        [2.44638998e-03, 2.06700714e-05],
+        [5.37123333e-04, 1.22797736e-02]]))
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">best_weights</span> <span class="o">=</span> <span class="n">get_batch_weights</span><span class="p">(</span><span class="n">mean</span><span class="p">,</span> <span class="n">stddev</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">run_trial</span><span class="p">(</span><span class="n">best_weights</span><span class="p">,</span> <span class="n">render</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>37.0
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="monte-carlo-tree-search">
+<h2>Monte Carlo Tree Search<a class="headerlink" href="#monte-carlo-tree-search" title="Permalink to this headline">#</a></h2>
+<p>Upcoming</p>
+</section>
+<section id="probabilistic-ensembles">
+<h2>Probabilistic Ensembles<a class="headerlink" href="#probabilistic-ensembles" title="Permalink to this headline">#</a></h2>
+<p>Upcoming</p>
+</section>
 </section>
 
     <script type="text/x-thebe-config">
